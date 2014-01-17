@@ -11,6 +11,7 @@
 \usepackage{graphicx, psfrag, Sweave}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 %------ Frontmatter ------
 \title{The FLBRP package for calculating  reference points.}

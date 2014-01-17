@@ -524,7 +524,7 @@ args(read.table)
 Coercion is the act of creating one type of R object from another, this can be changing the basic
 type, i.e. a string into a number, or a matrix into a data.frame.
 
-Coercion just requires sticking an “as.” in front of the type you want to create e.g. for both the
+Coercion just requires sticking an ???as.??? in front of the type you want to create e.g. for both the
 atomic types (i.e. vectors of type integer, double,..)
 
 \begin{mylisting}\begin{center}\begin{minipage}[H]{0.95\textwidth}\begin{shaded} 
@@ -559,7 +559,7 @@ shown. The readLines method will do something very similar but will read in only
 specified number of lines. The read.table method is particularly useful. It returns a data.frame object
 containing the data. If the header is specified as TRUE then the first line of data to be read in will
 be used for the column names in the returned data.frame object. read.csv() is similar to read.table
-and is basically a wrapper that defines the seperators ad “,” and sets header=TRUE by default e.g.
+and is basically a wrapper that defines the seperators ad ???,??? and sets header=TRUE by default e.g.
 to read in the catch distribution data. You will need to change the file path given in the example
 below to the location of the file on your machine.
 
@@ -709,7 +709,7 @@ are grouped together in S4 classes, these methods can still be used with FLR. Fo
 derived from an array and so can be manipulated using functions written for arrays, while an FLR class 
 has similarities to a list (in that it can contain a variety of data types) and  functions that work for
  lists have been overloaded so that they work for  FLR classes. In R it is recommended that rather 
-than using “for loops” that you use apply and sweep. To the new user this can appear to be confusing
+than using ???for loops??? that you use apply and sweep. To the new user this can appear to be confusing
  but using them speeds up code and helps conceptually by moving towards a "whole object" view. The
  apply family of functions allow functions to be applied on subsets of different types of R classes
  (i.e. lapply, tapply, sapply, rapply mapply etc). Sweep is useful when trying to perform an operation 
@@ -821,8 +821,8 @@ err(rnorm(5,0,1))
 \end{shaded}\end{minipage}\end{center}\end{mylisting}
 
 You can debug functions written in R using the environment browser. This will interrupt the
-execution of an expression and allow the inspection of the environment where ‘browser’ was called
-from. A call to ‘browser’ can be included in the body of a function. When reached, this causes a
+execution of an expression and allow the inspection of the environment where ???browser??? was called
+from. A call to ???browser??? can be included in the body of a function. When reached, this causes a
 pause in the execution of the current expression and allows access to the R interpreter, enabling you
 to interrogate the objects that have been declared locally within the function.
 For example if we have the following function which takes a numeric vector and performs a

@@ -1,0 +1,141 @@
+% ALKr.Rnw --
+%
+% Author: laurence kell <lauriekell@gmail.com>
+
+%\VignetteIndexEntry{ALKr}
+%\VignetteIndexEntry{An R Package for modelling age length keys}
+%\VignetteKeyword{ALKr, diagnostics, IO, read, write}
+
+\documentclass[shortnames,nojss,article]{jss}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{framed}
+\usepackage{color}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{natbib} \bibliographystyle{plain}
+\usepackage{graphicx, psfrag, Sweave}
+\usepackage{enumerate}
+\geometry{verbose,a4paper,tmargin=2cm,bmargin=1.5cm,lmargin=2cm,rmargin=3cm}
+
+\usepackage{booktabs,flafter} %,thumbpdf}
+
+\definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+
+\author{Laurence Kell\\ICCAT \And Romain Fran\c{c}ois\\\proglang{R} Enthusiasts \And Romain Fran\c{c}ois\\\proglang{R} Enthusiasts}
+\Plainauthor{Dirk Eddelbuettel, Romain Fran\c{c}ois}
+
+
+\title{Simulation Modelling with Age length Keys using \pkg{ALKr}}
+\Plaintitle{Simulation Modelling with Age length Keys using ALKr}
+
+\Abstract{The \pkg{ALKr}}
+
+\Keywords{\proglang{R}, ALKr, stock assessment}
+\Plainkeywords{R, ALKr, stock assessment}
+
+\Volume{40}
+\Issue{8}
+\Month{April}
+\Year{2011}
+\Submitdate{2010-11-15}
+\Acceptdate{2011-03-21}
+
+\Address{
+  Laurence Kell \\
+  ICCAT Secretariat\\ 
+  C/Coraz\'{o}n de Mar\'{\i}a, 8. \\
+  28002 Madrid\\
+  Spain\\   
+  E-mail: \email{Laurie.Kell@iccat.int}\\
+
+  Romain Fran\c{c}ois\\
+  Professional \proglang{R} Enthusiast\\
+  1 rue du Puits du Temple\\
+  34 000 Montpellier, France \\
+  E-mail: \email{romain@r-enthusiasts.com}\\
+  URL: \url{http://romainfrancois.blog.free.fr/}\\
+
+Romain Fran\c{c}ois\\
+  Professional \proglang{R} Enthusiast\\
+  1 rue du Puits du Temple\\
+  34 000 Montpellier, France \\
+  E-mail: \email{romain@r-enthusiasts.com}\\
+  URL: \url{http://romainfrancois.blog.free.fr/}
+}
+
+{\fontfamily{phv}\selectfont Helvetica looks like this}
+and 
+{\fontencoding{OT1}\fontfamily{ppl} Palatino looks like this}
+
+%% need no \usepackage{Sweave.sty}
+
+
+<<prelim,echo=FALSE,print=FALSE>>=
+library(ALKr)
+
+stampIt=function(...){
+   require(plyr)
+
+   args=list(...)
+   
+   ldply(args, function(x) { res=packageDescription(x)
+                            c(Package=x,
+                              Version=packageDescription("ALKr")$Version,
+                              Date   =packageDescription("ALKr")$Date)})}
+
+smry=stampIt("ALKr")
+
+theme_ms <- function(base_size = 12, base_family = "",...) { 
+  # Starts with theme_grey and then modify some parts 
+  res=theme_grey(base_size = base_size, base_family   = base_family) %+replace% 
+    theme(axis.text         = element_text(                                     size   = rel(0.8)), 
+          axis.ticks        = element_line(                 colour = "black"), 
+          legend.key        = element_rect(                 colour = "grey80"), 
+          panel.background  = element_rect(fill = "white",  colour = NA), 
+          panel.border      = element_rect(fill = NA,       colour = "grey50"), 
+          panel.grid.major  = element_line(                 colour = "grey90",  size = 0.2), 
+          panel.grid.minor  = element_line(                 colour = "grey98",  size = 0.5), 
+          strip.background  = element_rect(fill = "grey80", colour = "grey50"), 
+          strip.background  = element_rect(fill = "grey80", colour = "grey50")) 
+  
+  modifyList(res, list(...))
+} 
+@
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+
+\begin{mylisting}\begin{center}\begin{minipage}[H]{0.95\textwidth}\begin{shaded}
+<<eval=FALSE>>=
+plot(1)
+@
+\end{shaded}\end{minipage}\end{center}\end{mylisting}
+
+\section{Introduction}
+
+\section{Methods}
+
+\subsection{Data}
+
+\subsection{Plotting}
+
+\section{Examples}
+
+
+\subsection{Monte Carlo}
+
+
+\newpage
+
+\end{document}

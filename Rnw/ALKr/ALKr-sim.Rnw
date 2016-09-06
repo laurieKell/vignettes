@@ -1,0 +1,235 @@
+% ALKr.Rnw --
+%
+% Author: laurence kell <lauriekell@gmail.com>
+
+%\VignetteIndexEntry{ALKr}
+%\VignetteIndexEntry{An R Package for modelling age length keys}
+%\VignetteKeyword{ALKr, diagnostics, IO, read, write}
+
+\documentclass[shortnames,nojss,article]{jss}
+
+\usepackage[onehalfspacing]{setspace}
+\usepackage{natbib} \bibliographystyle{plain}
+\usepackage{graphicx, psfrag, Sweave}
+\usepackage{enumerate}
+
+\usepackage{booktabs,flafter} %,thumbpdf}
+\usepackage{hyperref}
+
+\newcommand{\var}[1]{\emph{#1}}
+
+\author{Laurence Kell\\ICCAT \And 
+        A.N. Other\\\proglang{R} Enthusiasts}
+\Plainauthor{Laurence Kell, A.N. Other}
+
+
+\title{Simulation Modelling with Age length Keys using \pkg{ALKr}}
+\Plaintitle{Simulation Modelling with Age length Keys using ALKr}
+
+\Abstract{The \pkg{ALKr}}
+
+\Keywords{\proglang{R}, ALKr, stock assessment}
+\Plainkeywords{R, ALKr, stock assessment}
+
+\Volume{40}
+\Issue{8}
+\Month{April}
+\Year{2011}
+\Submitdate{2010-11-15}
+\Acceptdate{2011-03-21}
+
+\Address{
+  Laurence Kell \\
+  ICCAT Secretariat\\ 
+  C/Coraz\'{o}n de Mar\'{\i}a, 8. \\
+  28002 Madrid\\
+  Spain\\   
+  E-mail: \email{Laurie.Kell@iccat.int}\\
+
+}
+
+%% need no \usepackage{Sweave.sty}
+
+
+<<prelim,echo=FALSE,print=FALSE>>=
+library(ALKr)
+
+library(ggplot2)
+
+stampIt=function(...){
+   require(plyr)
+
+   args=list(...)
+   
+   ldply(args, function(x) { res=packageDescription(x)
+                            c(Package=x,
+                              Version=packageDescription("ALKr")$Version,
+                              Date   =packageDescription("ALKr")$Date)})}
+
+smry=stampIt("ALKr")
+
+theme_ms <- function(base_size = 12, base_family = "",...) { 
+  # Starts with theme_grey and then modify some parts 
+  res=theme_grey(base_size = base_size, base_family   = base_family) %+replace% 
+    theme(axis.text         = element_text(                                     size   = rel(0.8)), 
+          axis.ticks        = element_line(                 colour = "black"), 
+          legend.key        = element_rect(                 colour = "grey80"), 
+          panel.background  = element_rect(fill = "white",  colour = NA), 
+          panel.border      = element_rect(fill = NA,       colour = "grey50"), 
+          panel.grid.major  = element_line(                 colour = "grey90",  size = 0.2), 
+          panel.grid.minor  = element_line(                 colour = "grey98",  size = 0.5), 
+          strip.background  = element_rect(fill = "grey80", colour = "grey50"), 
+          strip.background  = element_rect(fill = "grey80", colour = "grey50")) 
+  
+  modifyList(res, list(...))
+} 
+@
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\section{Introduction}
+
+The \pkg{ALKr} packge is designed to be used for calculating Age-Length Keys from incomplete data, 
+i.e. where aged data are not available for every year or strata. It contains several methods i.e. \code{gascuel, hoenig_heisey, inverse_ALK} and \code{kimura_chikuni}. In this document we show how to simulate data for use by these functions to evluate their performance as part of stock assessment procedures.
+
+We use the packages \pkg{ggplot2}, \pkg{plyr}  and \pkg{FLR} for plotting, data manipulation and stock assessment.
+
+\section{Methods}
+
+There are 3 methods for simulating Age Length Keys i.e. to
+
+\begin{itemize}
+  \item \code{alk} generate a perfect ALK
+  \item \code{sampleAlk} randomly sample from an existing ALK and 
+  \item \code{randAlk} randomly generate an ALK using Monte Carlo simulation
+\end{itemize}
+
+and 2 methods for creating random length frequency distributions (i.e. catch at size) and  frequency distributions, i.e.
+
+\begin{itemize}
+  \item \code{randFrq} to create a perfect ALK
+  \item \code{randLfd} to randomly sample from an existing ALK and 
+\end{itemize}
+
+%sqlTables(ch, tableName = "\var{some\_pattern}")
+
+\begin{Code}
+randFrq(n, object)
+\end{Code}
+
+\subsection{Data}
+
+Data are generated based on the Von Bertalanffy growth equation and the catch equation.
+
+
+\begin{center} $l=L_{\inf}(1.0-e^{-Ka-t_0})$ \end{center}
+\begin{center} $c_{a+1}=c_{a}\frac{F_{a}}{F_{a}+M_{a}}(1-e^{-F_{a}-M_{a}})$ \end{center}
+
+
+<<prelim,echo=TRUE,print=FALSE>>=
+library(ALKr)
+
+par =c(linf=318.85*.96,k=0.093,t0=-0.97-.16667,a=1.96e-8,b=3.0092)
+
+dat=data.frame(len=par["linf"]*(1.0-exp(-par["k"]*(1:50-par["t0"]))),
+               age=1:50)
+dat$sd=dat$len*.1
+@
+
+<<laa,echo=TRUE,fig=TRUE,width=7,height=4>>=
+p=ggplot(dat)+
+  geom_line(aes(age,len))+
+  geom_errorbar(aes(age,ymin=len-sd*2,ymax=len+sd*2),width=.5)
+
+print(p)
+@
+
+Add mortality vectors
+<<maa>>=
+dat=transform(dat, m  =rep(0.2,length(age)),
+                   sel=c(rep(0.2,3),rep(1,length(age)-3)))
+@
+
+Generate  numbers and catch-at-age
+<<caa>>=
+dat=transform(dat, f=sel*.5,
+                   z=sel*.5+m)
+
+naa=with(dat,10000*exp(-cumsum(m+f)))
+caa=with(dat,naa*f/z*exp(-z))
+@
+
+
+\subsection{Length Frequency Data}
+<<lfd,fig=TRUE,width=7,height=4>>=
+lfd=randLfd(20000,caa,dat$len,dat$sd)
+
+p=ggplot(data.frame(freq  =lfd,
+               length=as.numeric(substr(names(lfd),2,regexpr(",",names(lfd))-1))))+
+  geom_histogram(aes(length,weight=freq),binwidth=2)
+
+print(p)
+@
+
+\subsection{Age Length Key}
+
+<<alk,fig=TRUE,width=7,height=4>>=
+al=sweep(alk(seq(0,300,1),dat$len,dat$sd),1,caa,"*")
+al=melt(40000*al/sum(al))
+
+laa=par["linf"]*(1.0-exp(-par["k"]*(dat$age-0.5-par["t0"])))
+
+print(p+geom_line(aes(len,value,group=age),data=al,col="red")+
+  theme(legend.position="none")+
+  geom_vline(aes(xintercept=laa),data=data.frame(laa=laa),col="blue"))
+
+@
+
+\section{Examples}
+
+\subsection{Age Slicing}
+
+<<slice,fig=TRUE,width=7,height=4>>=
+names(lfd)=substr(names(lfd),2,regexpr(",",names(lfd))-1)
+res=age_slicing(fi=lfd, vb_params =c(t0=-0.97-.16667-.5,k=0.093,linf=318.85*.96),
+                        age_limits=c(0,15))
+
+caa[16]=sum(caa[16:50])
+caa=caa[0:16]
+caa=sum(res,na.rm=T)*caa/sum(caa)
+age=rbind(data.frame(what="True",  caa=caa[1:16],age=0:15),
+          data.frame(what="Sliced",caa=res,      age=0:15))
+
+print(ggplot(age)+geom_histogram(aes(age,weight=caa,fill=what,group=what),data=age,position="dodge"))
+@
+
+
+<<faa,fig=TRUE,width=7,height=4>>=
+f=rbind(data.frame(what="True",  F=-log(caa[2:14]/caa[1:13])-.2,age=0:12),
+        data.frame(what="Sliced",F=-log(res[2:14]/res[1:13])-.2,age=0:12))
+print(ggplot(age)+geom_line(aes(age,F,group=what,col=what),data=f))
+@
+
+
+\subsection{Monte Carlo}
+
+
+\section{References}
+
+  Dempster, A.P., Laird, N.M., Rubin, D.B. (1977). Maximum
+  Likelihood from Incomplete Data via the EM Algorithm.
+  \emph{Journal of the Royal Statistical Society. Series B
+  (Methodological)}, \textbf{39}/1, 1-38. DOI:
+  \code{10.2307/2984875}
+
+  Hoenig, J.M., Heisey, D.M., Hanumara, R.C. (1993). Using
+  Prior and Current Information to Estimate Age
+  Composition: a new kind of age-length key. \emph{ICES CM
+  Documents 1993}, 10.
+
+  Hoenig, J.M., Heisey, D.M., Hanumara, R.C. (1994). A
+  computationally simple approach to using current and past
+  data in age-length key. \emph{ICES CM Documents 1994}, 5.
+
+\end{document}

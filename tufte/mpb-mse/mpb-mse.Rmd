@@ -1,0 +1,104 @@
+---
+title: "Management Strategy Evaluation of Biomass Dynamic Management Procedures"
+author: "Laurence Kell"
+date: "August 13th, 2016"
+output:
+    tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+bibliography: /home/laurie/bib/refs.bib
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{mpb}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr_init, echo=FALSE, results="hide"}
+library(knitr)
+## Global options
+opts_chunk$set(echo    =TRUE,
+               eval    =TRUE,
+               cache   =!FALSE,
+               cache.path="cache/",
+               prompt  =FALSE,
+               comment =NA,
+               message =FALSE,
+               tidy    =FALSE,
+               warnings=FALSE,
+               fig.height=4.5,
+               fig.width =4.5,
+               fig.path  ="tex/")
+```
+
+```{r,echo=FALSE}
+sink(NULL)
+warn=options()$warn
+options(warn=-1)
+library(ggplotFL)
+library(plyr)
+library(reshape)
+library(mpb)
+
+theme_set(theme_bw())
+options(digits=3)
+options(warn=warn)
+sink()
+```
+
+# Introduction
+
+\newthought{Management Strategy Evaluation (MSE)} requires six steps @punt2007developing; namely i) identification of management objectives; ii) selection of hypotheses for the OM; iii) conditioning the OM based on data and knowledge, and possible weighting and rejection of hypotheses; iv) identifying candidate management strategies; v) running the Management Procedure (MP) as a feedback control in order to simulate the long-term impact of management; and then vi) identifying the MPs that robustly meet management objectives. 
+
+In this document we provide an example of conducting and MSE using the `mpb` package.
+
+
+```{r}
+library(mpb)
+library(FLash)
+library(FLBRP)
+```
+
+# Management objectives 
+# Operating Model 
+# Management strategies 
+# Running 
+the Management Procedure (MP) as a feedback control in order to simulate the long-term impact of management;  
+# Identifying the MPs that robustly meet management objectives. 
+
+
+```{r}
+# load(om)
+# load(eql)
+load("/home/laurie/Desktop/flr/mpb/data/om.RData")
+load("/home/laurie/Desktop/flr/mpb/data/eql.RData")
+```
+
+```{r}
+#' om=fwdWindow(om,eql,end=2030)
+#' om=propagate(om,100)
+```
+
+```{r}
+#' srDev=FLQuant(0,dimnames=list(year=2000:2030))
+#' srDev=rlnorm(100,srDev,0.3)
+#' 
+#' om=fwd(om,catch=catch(om)[,ac(2000:2011)],sr=eql,sr.residuals=srDev)
+#' om=fwdWindow(om,eql,end=2040)
+```
+
+```{r}
+#' 
+#' uDev=FLQuant(0,dimnames=list(year=ac(dims(eql)["minyear"]):ac(dims(eql)["maxyear"])))
+#' uDev=rlnorm(100,uDev,0.3)
+#' 
+#' library(popbio)
+#' mp=FLBRP2biodyn(  eql,"biodyn")
+#' 
+#' modelParams=mpb:::modelParams
+#' setParams(mp)=ssb.obs(eql)%*%uDev
+#' setControl(mp)=params(mp)
+#' 
+```
+
+# References

@@ -1,0 +1,85 @@
+% ALKr.Rnw --
+%
+% Author: laurence kell <lauriekell@gmail.com>
+
+%\VignetteIndexEntry{ALKr}
+%\VignetteIndexEntry{An R Package for read/wrting ALKr files and plotting data from a variety of fish stock assessment programs}
+%\VignetteKeyword{ALKr, diagnostics, IO, read, write}
+
+
+\documentclass[shortnames,nojss,article]{jss}
+
+\usepackage[onehalfspacing]{setspace}
+\usepackage{natbib} \bibliographystyle{plain}
+\usepackage{graphicx, psfrag, Sweave}
+\usepackage{enumerate}
+
+\usepackage{booktabs,flafter} %,thumbpdf}
+\usepackage{hyperref}
+
+%\newcommand{\code}[1]{\texttt{#1}}
+%\newcommand{\proglang}[1]{\textsf{#1}}
+%\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+
+\author{Laurence Kell\\ICCAT}
+\Plainauthor{Laurence Kell}
+
+\title{\pkg{ALKr}: Age length Key Modelling}
+\Plaintitle{ALKr: Age length Key Modelling}
+
+\Abstract{The \pkg{ALKr}}
+
+\Keywords{\proglang{R}, ALKr, stock assessment}
+\Plainkeywords{R, ALKr, stock assessment}
+
+\Address{
+  Laurence Kell \\
+  ICCAT Secretariat\\ 
+  C/Coraz\'{o}n de Mar\'{\i}a, 8. \\
+  28002 Madrid\\
+  Spain\\ 
+  
+  E-mail: \email{Laurie.Kell@iccat.int}
+}
+
+%% need no \usepackage{Sweave.sty}
+
+
+<<prelim,echo=FALSE,print=FALSE>>=
+library(ALKr)
+
+stampIt=function(...){
+   require(plyr)
+
+   args=list(...)
+   
+   ldply(args, function(x) { res=packageDescription(x)
+                            c(Package=x,
+                              Version=packageDescription("ALKr")$Version,
+                              Date   =packageDescription("ALKr")$Date)})}
+
+smry=stampIt("ALKr")
+
+theme_ms <- function(base_size = 12, base_family = "",...) { 
+  # Starts with theme_grey and then modify some parts 
+  res=theme_grey(base_size = base_size, base_family   = base_family) %+replace% 
+    theme(axis.text         = element_text(                                     size   = rel(0.8)), 
+          axis.ticks        = element_line(                 colour = "black"), 
+          legend.key        = element_rect(                 colour = "grey80"), 
+          panel.background  = element_rect(fill = "white",  colour = NA), 
+          panel.border      = element_rect(fill = NA,       colour = "grey50"), 
+          panel.grid.major  = element_line(                 colour = "grey90",  size = 0.2), 
+          panel.grid.minor  = element_line(                 colour = "grey98",  size = 0.5), 
+          strip.background  = element_rect(fill = "grey80", colour = "grey50"), 
+          strip.background  = element_rect(fill = "grey80", colour = "grey50")) 
+  
+  modifyList(res, list(...))
+} 
+@
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\section{Introduction}
+
+\end{document}

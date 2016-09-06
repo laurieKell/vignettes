@@ -50,55 +50,94 @@ sink()
 
 \newthought{Management Strategy Evaluation (MSE)} requires six steps @punt2007developing; namely i) identification of management objectives; ii) selection of hypotheses for the OM; iii) conditioning the OM based on data and knowledge, and possible weighting and rejection of hypotheses; iv) identifying candidate management strategies; v) running the Management Procedure (MP) as a feedback control in order to simulate the long-term impact of management; and then vi) identifying the MPs that robustly meet management objectives. 
 
-In this document we provide an example of conducting and MSE using the `mpb` package.
+In this document we provide an example of conducting an MSE using the `mpb` package.
 
+# `mpb`
 
 ```{r}
+library(FLCore)
 library(mpb)
-library(FLash)
-library(FLBRP)
+library(ggplotFL)
 ```
 
 # Management objectives 
+
+```{r}
+library(FLBRP)
+```
+
 # Operating Model 
-# Management strategies 
+
+```{r}
+library(diags)
+```
+
+```{r}
+library(FLife)
+```
+
+```{r}
+load(om)
+load(eql)
+```
+
+```{r}
+om=fwdWindow(om,eql,end=2030)
+om=propagate(om,100)
+```
+
+```{r}
+srDev=FLQuant(0,dimnames=list(year=2000:2030))
+srDev=rlnorm(100,srDev,0.3)
+
+om=fwd(om,catch=catch(om)[,ac(2000:2011)],sr=eql,sr.residuals=srDev)
+om=fwdWindow(om,eql,end=2040)
+```
+
+# Observation Error Model
+
+```{r, eval=FALSE}
+library(FLBRP)
+uDev=FLQuant(0,dimnames=list(year=ac(dims(eql)["minyear"]):ac(dims(eql)["maxyear"])))
+uDev=rlnorm(100,uDev,0.3)
+
+library(popbio)
+
+refpts=FLBRP:::refpts
+mp=mpb:::FLBRP2biodyn(  eql,"biodyn")
+
+modelParams=mpb:::modelParams
+setParams(mp)=ssb.obs(eql)%*%uDev
+setControl(mp)=params(mp)
+
+```
+
+# Management strategies
+
+```{r, eval=FALSE}
+library(popbio)
+mp=FLBRP2biodyn(  eql,"biodyn")
+ 
+modelParams=mpb:::modelParams
+setParams(mp)=ssb.obs(eql)%*%uDev
+setControl(mp)=params(mp)
+```
 # Running 
 the Management Procedure (MP) as a feedback control in order to simulate the long-term impact of management;  
+
+
+```{r}
+?mseBiodyn
+```
+
 # Identifying the MPs that robustly meet management objectives. 
 
 
 ```{r}
-# load(om)
-# load(eql)
-load("/home/laurie/Desktop/flr/mpb/data/om.RData")
-load("/home/laurie/Desktop/flr/mpb/data/eql.RData")
+library(kobe)
 ```
 
-```{r}
-#' om=fwdWindow(om,eql,end=2030)
-#' om=propagate(om,100)
-```
 
-```{r}
-#' srDev=FLQuant(0,dimnames=list(year=2000:2030))
-#' srDev=rlnorm(100,srDev,0.3)
-#' 
-#' om=fwd(om,catch=catch(om)[,ac(2000:2011)],sr=eql,sr.residuals=srDev)
-#' om=fwdWindow(om,eql,end=2040)
-```
 
-```{r}
-#' 
-#' uDev=FLQuant(0,dimnames=list(year=ac(dims(eql)["minyear"]):ac(dims(eql)["maxyear"])))
-#' uDev=rlnorm(100,uDev,0.3)
-#' 
-#' library(popbio)
-#' mp=FLBRP2biodyn(  eql,"biodyn")
-#' 
-#' modelParams=mpb:::modelParams
-#' setParams(mp)=ssb.obs(eql)%*%uDev
-#' setControl(mp)=params(mp)
-#' 
-```
 
 # References

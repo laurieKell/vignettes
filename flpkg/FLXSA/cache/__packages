@@ -1,0 +1,7 @@
+base
+knitr
+lattice
+MASS
+FLCore
+ggplot2
+ggplotFL
